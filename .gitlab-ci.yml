@@ -37,6 +37,8 @@ deploy to surge:
     - surge --project ./public --domain https://obnoxious-scissors.surge.sh/
   
 test deployment:
+  image: alpine
   stage: deployment tests
   script:
+    - apk add curl
     - curl "https://obnoxious-scissors.surge.sh/" | grep -q "Gatsby"
