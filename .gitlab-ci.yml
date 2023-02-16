@@ -9,7 +9,7 @@ stages:
 build website:
   stage: build
   script:
-    echo "GATSBY_VERSION=${CI_COMMIT_SHORT_SHA}" > .env.production
+    - echo "GATSBY_VERSION=${CI_COMMIT_SHORT_SHA}" > .env.production
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
