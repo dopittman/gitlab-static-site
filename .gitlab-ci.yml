@@ -13,6 +13,10 @@ cache:
     - node_modules/
   policy: pull
 
+variables:
+  STAGING_DOMAIN: obnoxious-staging.surge.sh/
+  PRODUCTION_DOMAIN: obnoxious-scissors.surge.sh/
+
 build website:
   stage: build
   script:
@@ -44,20 +48,20 @@ deploy staging:
   stage: deploy production
   environment:
     name: staging
-    url: https://obnoxious-staging.surge.sh/
+    url: https://$STAGING_DOMAIN
   script:
     - npm install -global surge
-    - surge --project ./public --domain https://obnoxious-staging.surge.sh/
+    - surge --project ./public --domain $STAGING_DOMAIN
 
 deploy production:
   cache: {}
   stage: deploy production
   environment:
     name: production
-    url: https://obnoxious-scissors.surge.sh/
+    url: https://$PRODUCTION_DOMAIN
   script:
     - npm install -global surge
-    - surge --project ./public --domain https://obnoxious-scissors.surge.sh/
+    - surge --project ./public --domain $PRODUCTOIN_DOMAIN
   
 production tests:
   cache: {}
