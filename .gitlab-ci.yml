@@ -45,7 +45,7 @@ test website:
 
 deploy staging:
   cache: {}
-  stage: deploy production
+  stage: deploy staging
   environment:
     name: staging
     url: https://$STAGING_DOMAIN
