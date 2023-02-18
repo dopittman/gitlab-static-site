@@ -3,6 +3,7 @@ image: node
 stages:
   - build
   - test
+  - deploy review
   - deploy staging
   - deploy production
   - production tests  
@@ -42,6 +43,17 @@ test website:
     - gatsby serve &
     - sleep 5
     -  curl "http://localhost:9000" | grep -q "Gatsby"
+
+deploy review:
+  stage: deploy review
+  only:
+    - merge_requests
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://obnoxious-$CI_ENVIRONMENT_SLUG.surge.sh
+  script:
+    - npm install -global surge
+    - surge --project ./public --domain https://obnoxious-$CI_ENVIRONMENT_SLUG.surge.sh
 
 deploy staging:
   cache: {}
