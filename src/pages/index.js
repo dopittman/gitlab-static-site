@@ -84,6 +84,7 @@ const IndexPage = () => (
       <h1>
         Welcome to <b>Gatsby!</b>
       </h1>
+      <div>This is a repo for me to leern about gitlab ci/cd</div>
       <div>Version {process.env.GATSBY_VERSION}</div>
       <p className={styles.intro}>
         <b>Example pages:</b>{" "}
