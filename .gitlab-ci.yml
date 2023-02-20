@@ -12,7 +12,6 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
-  policy: pull
 
 variables:
   STAGING_DOMAIN: obnoxious-staging.surge.sh/
@@ -20,6 +19,9 @@ variables:
 
 build website:
   stage: build
+  only:
+    - main
+    - merge_requests
   script:
     - echo "GATSBY_VERSION=${CI_COMMIT_SHORT_SHA}" > .env.production
     - npm install
@@ -32,11 +34,17 @@ test artifacts:
   image: alpine
   cache: {}
   stage: test
+  only:
+    - main
+    - merge_requests
   script:
     - grep -q "Gatsby" ./public/index.html
 
 test website:
   stage: test
+  only:
+    - main
+    - merge_requests
   script:
     - npm install
     - npm install -g gatsby-cli
@@ -62,7 +70,7 @@ deploy staging:
     name: staging
     url: https://$STAGING_DOMAIN
   only:
-    - master
+    - main
   script:
     - npm install -global surge
     - surge --project ./public --domain $STAGING_DOMAIN
@@ -76,7 +84,7 @@ deploy production:
   when: manual
   allow_failure: false
   only:
-    - master
+    - main
   script:
     - npm install -global surge
     - surge --project ./public --domain $PRODUCTION_DOMAIN
@@ -86,7 +94,7 @@ production tests:
   image: alpine
   stage: production tests
   only:
-    - master
+    - main
   script:
     - apk add --no-cache curl
     - curl "https://${PRODUCTION_DOMAIN}" | grep -q "Gatsby"
