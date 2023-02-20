@@ -22,10 +22,11 @@ build website:
   only:
     - main
     - merge_requests
-  script:
+  before_script:
     - echo "GATSBY_VERSION=${CI_COMMIT_SHORT_SHA}" > .env.production
     - npm install
     - npm install -g gatsby-cli
+  script:
     - gatsby build
   artifacts:
     paths:
@@ -45,9 +46,10 @@ test website:
   only:
     - main
     - merge_requests
-  script:
+  before_script:
     - npm install
     - npm install -g gatsby-cli
+  script:
     - gatsby serve &
     - sleep 5
     -  curl "http://localhost:9000" | grep -q "Gatsby"
@@ -60,8 +62,9 @@ deploy review:
     name: review/$CI_COMMIT_REF_NAME
     url: https://obnoxious-$CI_ENVIRONMENT_SLUG.surge.sh
     on_stop: stop review
+  before_script:
+    - npm install --global surge
   script:
-    - npm install -global surge
     - surge --project ./public --domain https://obnoxious-$CI_ENVIRONMENT_SLUG.surge.sh
 
 stop review:
@@ -70,8 +73,9 @@ stop review:
     - merge_requests
   variables:
     GIT_STRATEGY: none
-  script:
+  before_script:
     - npm install --global surge
+  script:
     - surge teardown https://obnoxious-$CI_ENVIRONMENT_SLUG.surge.sh
   when: manual
   environment:
@@ -86,8 +90,9 @@ deploy staging:
     url: https://$STAGING_DOMAIN
   only:
     - main
+  before_script:
+    - npm install --global surge
   script:
-    - npm install -global surge
     - surge --project ./public --domain $STAGING_DOMAIN
 
 deploy production:
@@ -100,8 +105,9 @@ deploy production:
   allow_failure: false
   only:
     - main
+  before_script:
+    - npm install --global surge
   script:
-    - npm install -global surge
     - surge --project ./public --domain $PRODUCTION_DOMAIN
   
 production tests:
@@ -110,6 +116,7 @@ production tests:
   stage: production tests
   only:
     - main
-  script:
+  before_script:
     - apk add --no-cache curl
+  script:
     - curl "https://${PRODUCTION_DOMAIN}" | grep -q "Gatsby"
